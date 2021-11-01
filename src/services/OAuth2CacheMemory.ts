@@ -1,6 +1,6 @@
-import IOAuth2Cache from './oauth2_cache';
+import OAuth2Cache from '../core/services/OAuth2Cache';
 
-export default class OAuth2CacheMemory implements IOAuth2Cache {
+export default class OAuth2CacheMemory implements OAuth2Cache {
   private idToken: string;
   private accessToken: string;
   private refreshToken: string;

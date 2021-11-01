@@ -1,4 +1,4 @@
-export default interface IOAuth2Core {
+export default interface OAuth2Core {
   getLoginUrl(): string;
   getTokenUrl(): string;
   codeCallback(code: string): Promise<boolean>;

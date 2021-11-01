@@ -1,4 +1,4 @@
-export default interface AutheronOAuth2Options {
+export default interface OAuth2Options {
   domain: string;
   client_id: string;
   cacheLocation?: string;

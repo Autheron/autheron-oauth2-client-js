@@ -1,8 +1,8 @@
-import AutheronOAuth2Options from "../autheron_oauth2_options";
-import IOAuth2Cache from "../oauth2_cache";
-import IOAuth2Core from "./oauth2_core";
+import AutheronOAuth2Options from "./OAuth2Options";
+import OAuth2Cache from "./services/OAuth2Cache";
+import OAuth2Core from "./OAuth2Core";
 
-export default class AutheronOAuth2Core implements IOAuth2Core {
+export default class OAuth2CoreAutheron implements OAuth2Core {
   // Base URL with no trailing slash
   private client_id: string;
   private baseUrl: string;
@@ -10,9 +10,9 @@ export default class AutheronOAuth2Core implements IOAuth2Core {
   private tokenEndpoint: string;
   private flow: "code" | "implicit";
   private responseType: string;
-  private cache: IOAuth2Cache;
+  private cache: OAuth2Cache;
 
-  constructor(options: AutheronOAuth2Options, cache: IOAuth2Cache) {
+  constructor(options: AutheronOAuth2Options, cache: OAuth2Cache) {
     if (!options.domain || options.domain.length === 0) {
       throw new Error('Invalid domain');
     }

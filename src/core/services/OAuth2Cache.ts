@@ -1,4 +1,4 @@
-export default interface IOAuth2Cache {
+export default interface OAuth2Cache {
   setIdToken(token: string): void;
   setAccessToken(token: string): void;
   setRefreshToken(token: string): void;
