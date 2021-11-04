@@ -1,6 +1,7 @@
 import AutheronOAuth2Options from "./OAuth2Options";
 import OAuth2Cache from "./services/OAuth2Cache";
 import OAuth2Core from "./OAuth2Core";
+import OAuth2Request from "./services/OAuth2Request";
 
 export default class OAuth2CoreAutheron implements OAuth2Core {
   // Base URL with no trailing slash
@@ -12,7 +13,7 @@ export default class OAuth2CoreAutheron implements OAuth2Core {
   private responseType: string;
   private cache: OAuth2Cache;
 
-  constructor(options: AutheronOAuth2Options, cache: OAuth2Cache) {
+  constructor(options: AutheronOAuth2Options, cache: OAuth2Cache, request: OAuth2Request) {
     if (!options.domain || options.domain.length === 0) {
       throw new Error('Invalid domain');
     }
@@ -60,21 +61,22 @@ export default class OAuth2CoreAutheron implements OAuth2Core {
     return true;
   }
 
-  implicitCallback(token: string): void {
-    throw new Error("Method not implemented.");
-  }
-
-  getAccessToken(): Promise<string> {
-    throw new Error("Method not implemented.");
+  async getAccessToken(): Promise<string> {
+    return this.cache.getAccessToken();
   }
 
   refreshTokens(): boolean {
     throw new Error("Method not implemented.");
+    return false;
   }
 
   updateTokens(token: any) {
     this.cache.setIdToken(token['id_token']);
     this.cache.setAccessToken(token['access_token']);
     this.cache.setRefreshToken(token['refresh_token']);
+  }
+
+  getCache(): OAuth2Cache {
+    return this.cache;
   }
 }

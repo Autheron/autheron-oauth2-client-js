@@ -1,4 +1,4 @@
-export default interface IOAuth2Client {
+export default interface OAuth2Client {
   getLoginUrl(): string;
   getTokenUrl(): string;
   isLoggedIn(): Promise<boolean>;
