@@ -2,28 +2,32 @@ import OAuth2Tokens from "../core/models/OAuth2Tokens";
 import OAuth2Request from "../core/services/OAuth2Request";
 
 export default class OAuth2RequestAutheron implements OAuth2Request {
+  private static readonly ID_TOKEN: string = 'id_token';
+  private static readonly ACCESS_TOKEN: string = 'access_token';
+  private static readonly REFRESH_TOKEN: string = 'refresh_token';
+
   async getTokenByCode(
     tokenUrl: string,
-    grant_type: string = 'authorization_code',
     code: string,
-    client_id: string,
-    redirect_uri: string): Promise<OAuth2Tokens> {
+    clientId: string,
+    redirectUri: string,
+    grantType: string = 'authorization_code'): Promise<OAuth2Tokens> {
     if (code === '') {
       throw new Error("code is required");
     }
-    var response = await fetch(tokenUrl, {
+    const response = await fetch(tokenUrl, {
       method: 'post',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ client_id: client_id, grant_type: grant_type, code: code }),
+      body: JSON.stringify({ client_id: clientId, grant_type: grantType, code }),
     })
 
     if (response.status !== 200) {
       throw new Error("Server failed");
     }
-    var body = await response.json();
+    const body = await response.json();
     return this.responseToTokens(body);
   }
 
@@ -33,9 +37,9 @@ export default class OAuth2RequestAutheron implements OAuth2Request {
 
   responseToTokens(body: any) : OAuth2Tokens {
     return {
-      id_token: body['id_token'],
-      access_token: body['access_token'],
-      refresh_token: body['refresh_token'] ?? '',
+      idToken: body[OAuth2RequestAutheron.ID_TOKEN],
+      accessToken: body[OAuth2RequestAutheron.ACCESS_TOKEN],
+      refreshToken: body[OAuth2RequestAutheron.REFRESH_TOKEN] ?? '',
     };
   }
 

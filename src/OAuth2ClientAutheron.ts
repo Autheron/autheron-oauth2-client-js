@@ -1,18 +1,21 @@
 import OAuth2Options from './core/OAuth2Options';
 import OAuth2Core from './core/OAuth2Core';
 import OAuth2CoreAutheron from './core/OAuth2CoreAutheron';
-import { jwtDecodeBody } from './jwt';
 import OAuth2Cache from './core/services/OAuth2Cache';
 import OAuth2CacheMemory from './services/OAuth2CacheMemory';
 import OAuth2Client from './OAuth2Client';
 import OAuth2RequestAutheron from './services/OAuth2RequestAutheron';
+import OAuth2Request from './core/services/OAuth2Request';
 
 export default class OAuth2ClientAutheron implements OAuth2Client {
   // Base URL with no trailing slash
   private oauth2Core: OAuth2Core;
 
-  constructor(private options: OAuth2Options) {
-    this.oauth2Core = new OAuth2CoreAutheron(options, new OAuth2CacheMemory(), new OAuth2RequestAutheron());
+  constructor(
+    private options: OAuth2Options,
+    cache: OAuth2Cache = new OAuth2CacheMemory(),
+    request: OAuth2Request = new OAuth2RequestAutheron()) {
+    this.oauth2Core = new OAuth2CoreAutheron(options, cache, request);
   }
 
   getLoginUrl(): string {
@@ -31,8 +34,8 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
    */
   async isLoggedIn(): Promise<boolean> {
     try {
-      let accessToken = jwtDecodeBody(await this.oauth2Core.getAccessToken())
-      let currentTime = this.currentTimeInSeconds();
+      const accessToken = jwtDecodeBody(await this.oauth2Core.getAccessToken())
+      const currentTime = this.currentTimeInSeconds();
       if (accessToken.nbf <= currentTime && accessToken.exp >= currentTime) {
         return true;
       }
@@ -64,4 +67,31 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
   currentTimeInSeconds(): number {
     return Math.round(new Date().getTime() / 1000);
   }
+}
+
+
+// Locally used functions
+export const jwtDecodeHeader = (token: string) => {
+  return jwtDecode(token, 0);
+}
+
+export const jwtDecodeBody = (token: string) => {
+  return jwtDecode(token, 1);
+}
+
+export const jwtDecodeSig = (token: string) => {
+  return jwtDecode(token, 2);
+}
+
+export const jwtDecode = (token: string, part: number) => {
+  const base64UrlSplit = token.split('.');
+  if (base64UrlSplit.length < part) {
+    throw new Error("JWT token has less parts than requested")
+  }
+  const base64 = base64UrlSplit[part].replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
 }
