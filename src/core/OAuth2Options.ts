@@ -1,7 +1,7 @@
 export default interface OAuth2Options {
   domain: string;
   clientId: string;
-  redirectUri: string,
+  redirectUri: string;
   cacheLocation?: string;
   authorizationPath?: string;
   tokenPath?: string;

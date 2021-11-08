@@ -1,8 +1,8 @@
-import AutheronOAuth2Options from "./OAuth2Options";
-import OAuth2Cache from "./services/OAuth2Cache";
-import OAuth2Core from "./OAuth2Core";
-import OAuth2Request from "./services/OAuth2Request";
-import Oauth2Tokens from "./models/OAuth2Tokens";
+import AutheronOAuth2Options from './OAuth2Options';
+import OAuth2Cache from './services/OAuth2Cache';
+import OAuth2Core from './OAuth2Core';
+import OAuth2Request from './services/OAuth2Request';
+import Oauth2Tokens from './models/OAuth2Tokens';
 
 export default class OAuth2CoreAutheron implements OAuth2Core {
   private clientId: string;
@@ -35,7 +35,7 @@ export default class OAuth2CoreAutheron implements OAuth2Core {
   }
 
   getLoginUrl(): string {
-    return `${this.authorizationEndpoint}?response_type=${this.responseType}&client_id=${this.clientId}`
+    return `${this.authorizationEndpoint}?response_type=${this.responseType}&client_id=${this.clientId}`;
   }
 
   getTokenUrl(): string {

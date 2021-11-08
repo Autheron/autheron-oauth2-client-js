@@ -1,4 +1,4 @@
-import OAuth2Cache from "./services/OAuth2Cache";
+import OAuth2Cache from './services/OAuth2Cache';
 
 export default interface OAuth2Core {
   getLoginUrl(): string;

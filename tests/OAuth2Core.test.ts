@@ -23,10 +23,10 @@ const CreateOAuth2Core = () => {
     clientId: '112233',
     redirectUri: '',
     flow: 'code',
-  }
+  };
   const oauth2Core: OAuth2Core = new OAuth2CoreAutheron(options, cache, request);
   return oauth2Core;
-}
+};
 
 test('Login URL', () => {
   const oauth2Core = CreateOAuth2Core();
@@ -53,5 +53,7 @@ test('Throws error on bad domain', () => {
     clientId: '',
     redirectUri: '',
   };
-  expect(() => { new OAuth2CoreAutheron(options, new OAuth2CacheMemory(), new OAuth2RequestMock()) }).toThrowError();
+  expect(() => {
+    new OAuth2CoreAutheron(options, new OAuth2CacheMemory(), new OAuth2RequestMock());
+  }).toThrowError();
 });

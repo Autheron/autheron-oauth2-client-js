@@ -14,7 +14,8 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
   constructor(
     private options: OAuth2Options,
     cache: OAuth2Cache = new OAuth2CacheMemory(),
-    request: OAuth2Request = new OAuth2RequestAutheron()) {
+    request: OAuth2Request = new OAuth2RequestAutheron(),
+  ) {
     this.oauth2Core = new OAuth2CoreAutheron(options, cache, request);
   }
 
@@ -34,14 +35,12 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
    */
   async isLoggedIn(): Promise<boolean> {
     try {
-      const accessToken = jwtDecodeBody(await this.oauth2Core.getAccessToken())
+      const accessToken = jwtDecodeBody(await this.oauth2Core.getAccessToken());
       const currentTime = this.currentTimeInSeconds();
       if (accessToken.nbf <= currentTime && accessToken.exp >= currentTime) {
         return true;
       }
-
-    }
-    catch (e) {
+    } catch (e) {
       return false;
     }
     return false;
@@ -61,7 +60,7 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
 
   // We currently do not handle this
   implicitCallback(token: string): void {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   currentTimeInSeconds(): number {
@@ -69,29 +68,33 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
   }
 }
 
-
 // Locally used functions
 export const jwtDecodeHeader = (token: string) => {
   return jwtDecode(token, 0);
-}
+};
 
 export const jwtDecodeBody = (token: string) => {
   return jwtDecode(token, 1);
-}
+};
 
 export const jwtDecodeSig = (token: string) => {
   return jwtDecode(token, 2);
-}
+};
 
 export const jwtDecode = (token: string, part: number) => {
   const base64UrlSplit = token.split('.');
   if (base64UrlSplit.length < part) {
-    throw new Error("JWT token has less parts than requested")
+    throw new Error('JWT token has less parts than requested');
   }
   const base64 = base64UrlSplit[part].replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map((c) => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join(''),
+  );
 
   return JSON.parse(jsonPayload);
-}
+};
