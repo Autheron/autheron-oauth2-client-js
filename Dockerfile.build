@@ -1,0 +1,9 @@
+FROM node:16-alpine
+ARG GITHUB_RUN_NUMBER
+ARG BUILD_HASH
+COPY . /home/node/app
+WORKDIR /home/node/app
+RUN apk add zip
+RUN npm install
+RUN npm build
+RUN npm publish

@@ -1,0 +1,9 @@
+FROM node:16-alpine
+ARG GITHUB_RUN_NUMBER
+ARG BUILD_HASH
+COPY . /home/node/app
+WORKDIR /home/node/app
+RUN npm install
+RUN npm run format
+RUN npm run lint
+RUN npm run test
