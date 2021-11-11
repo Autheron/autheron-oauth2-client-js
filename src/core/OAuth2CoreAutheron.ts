@@ -48,7 +48,7 @@ export default class OAuth2CoreAutheron implements OAuth2Core {
     return false;
   }
 
-  async getAccessToken(): Promise<string> {
+  getAccessToken(): string {
     return this.cache.getAccessToken();
   }
 

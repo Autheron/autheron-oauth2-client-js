@@ -4,7 +4,7 @@ export default interface OAuth2Core {
   getLoginUrl(): string;
   getTokenUrl(): string;
   codeCallback(code: string): Promise<boolean>;
-  getAccessToken(): Promise<string>;
+  getAccessToken(): string;
   refreshTokens(): boolean;
   updateTokens(token: any): void;
 }

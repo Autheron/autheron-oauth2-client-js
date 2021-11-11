@@ -33,9 +33,9 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
    * Check if access token is not expired
    * If it is expired, check if refresh token is not expired and try to fetch a new one
    */
-  async isLoggedIn(): Promise<boolean> {
+  isLoggedIn(): boolean {
     try {
-      const accessToken = jwtDecodeBody(await this.oauth2Core.getAccessToken());
+      const accessToken = jwtDecodeBody(this.oauth2Core.getAccessToken());
       const currentTime = this.currentTimeInSeconds();
       if (accessToken.nbf <= currentTime && accessToken.exp >= currentTime) {
         return true;
@@ -50,7 +50,7 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
     return this.oauth2Core.codeCallback(code);
   }
 
-  async getAccessToken(): Promise<string> {
+  getAccessToken(): string {
     return this.oauth2Core.getAccessToken();
   }
 
