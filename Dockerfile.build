@@ -1,8 +1,10 @@
 FROM node:16-alpine
 ARG GITHUB_RUN_NUMBER
 ARG BUILD_HASH
+ARG NPM_TOKEN
 COPY . /home/node/app
 WORKDIR /home/node/app
+RUN echo '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > .npmrc
 RUN apk add zip
 RUN npm install
 RUN npm run build

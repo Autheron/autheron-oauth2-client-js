@@ -1,6 +1,6 @@
 {
   "name": "autheron-oauth2-client-js",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Autheron OAuth2 Javascript Client",
   "main": "lib/index.js",
   "scripts": {
