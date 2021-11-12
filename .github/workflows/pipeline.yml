@@ -1,0 +1,26 @@
+name: Test, Build and Deploy
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test
+        run: |
+          export BUILD_HASH=$(git rev-parse --short=10 HEAD)
+          docker-compose build --progress plain test
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Publish
+        run: |
+          export BUILD_HASH=$(git rev-parse --short=10 HEAD)
+          docker-compose build --progress plain lib

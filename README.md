@@ -1,1 +1,1 @@
-# autheron-spa-js
+# Autheron OAuth2 Client
