@@ -2,21 +2,16 @@ import OAuth2Options from './core/OAuth2Options';
 import OAuth2Core from './core/OAuth2Core';
 import OAuth2CoreAutheron from './core/OAuth2CoreAutheron';
 import OAuth2Cache from './core/services/OAuth2Cache';
-import OAuth2CacheMemory from './services/OAuth2CacheMemory';
 import OAuth2Client from './OAuth2Client';
-import OAuth2RequestAutheron from './services/OAuth2RequestAutheron';
 import OAuth2Request from './core/services/OAuth2Request';
 
 export default class OAuth2ClientAutheron implements OAuth2Client {
-  // Base URL with no trailing slash
   private oauth2Core: OAuth2Core;
+  public isLoggedIn: boolean;
 
-  constructor(
-    private options: OAuth2Options,
-    cache: OAuth2Cache = new OAuth2CacheMemory(),
-    request: OAuth2Request = new OAuth2RequestAutheron(),
-  ) {
+  constructor(options: OAuth2Options, cache: OAuth2Cache, request: OAuth2Request) {
     this.oauth2Core = new OAuth2CoreAutheron(options, cache, request);
+    this.isLoggedIn = false;
   }
 
   getLoginUrl(): string {
@@ -33,21 +28,25 @@ export default class OAuth2ClientAutheron implements OAuth2Client {
    * Check if access token is not expired
    * If it is expired, check if refresh token is not expired and try to fetch a new one
    */
-  isLoggedIn(): boolean {
+  loggedIn(): boolean {
     try {
       const accessToken = jwtDecodeBody(this.oauth2Core.getAccessToken());
       const currentTime = this.currentTimeInSeconds();
       if (accessToken.nbf <= currentTime && accessToken.exp >= currentTime) {
-        return true;
+        this.isLoggedIn = true;
+        return this.isLoggedIn;
       }
     } catch (e) {
-      return false;
+      this.isLoggedIn = false;
     }
-    return false;
+    this.isLoggedIn = false;
+    return this.isLoggedIn;
   }
 
   async codeCallback(code: string): Promise<boolean> {
-    return this.oauth2Core.codeCallback(code);
+    const result = await this.oauth2Core.codeCallback(code);
+    this.loggedIn();
+    return result;
   }
 
   getAccessToken(): string {
